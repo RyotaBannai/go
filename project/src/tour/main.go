@@ -35,6 +35,13 @@ func myMap() {
 	}
 	fmt.Println(m2)
 
+	// 要素が存在するか確認
+	elem, ok := m2["Google"]
+	if ok {
+		fmt.Println(elem)
+	} else {
+		fmt.Println("Google doen't exist.")
+	}
 }
 
 func myIterate() {
