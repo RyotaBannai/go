@@ -10,3 +10,20 @@
 
 - 構造体やそのフィールド、関数、メソッドのスコープは、名前の先頭が大文字か小文字かで決まる
   - 大文字なら public、小文字なら同じパッケージ内に閉じたスコープ
+
+### & and *
+`The & Operator`: `&` goes in front of a variable when you want to get that `variable's memory address`.
+`The * Operator`: `*` goes in front of a variable that holds a memory address and `resolves it` (it is therefore the counterpart to the & operator).
+  - It goes and gets the thing that the pointer was pointing at, e.g. *myString
+- `メソッドが変数レシーバである場合、呼び出し時に、変数、または、ポインタのいずれかのレシーバとして取ることができる`
+```go
+// メソッドが変数レシーバ である場合 (*Vertex じゃない.)
+func (v Vertex) Abs() float64 {
+  return math.Sqrt(...)
+}
+var v Vertex
+fmt.Println(v.Abs()) // OK
+p := &v
+fmt.Println(p.Abs()) // OK
+// この場合、 p.Abs() は (*p).Abs() として解釈される
+```
