@@ -33,3 +33,32 @@ fmt.Println(p.Abs()) // OK
 2. メソッド呼び出しごとに変数のコピーを避けるため（レシーバが大きな構造体である場合に特に効果的である）
 - 一般的に値レシーバとポインタレシーバのどちらかで全てのメソッドを与え、`混在させるべきではない.`
 
+### nil interface
+- `nil interface` がメソッドを呼び出すとランタイムエラー
+- `interface を実装した具体的な値が nil の場合`は nil をレシーバーとして呼び出されるため、ランタイムエラーにはならない
+```go
+// つまりこのような nil interface はエラー
+
+type I interface {
+	M()
+}
+
+type T struct {
+	S string
+}
+
+func (t *T) M() {
+}
+
+func main() {
+	var j I
+	var t *T
+	j = t
+	j.M() // nil as value is ok.
+
+	var i I // nil interface
+	i.M() // Panic!
+}
+
+```
+- `the empty interface`: 空の interface は未知の型を扱うコードで使用される（入ってくる型が未知なので、empty interface を定義し、なんでも受け入れるようにする.）
