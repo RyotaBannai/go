@@ -17,7 +17,11 @@ func (t T) M() {
 	fmt.Println(t.S)
 }
 
-func main() {
+func call() {
 	var i I = T{"Hello"} // 構造体に型宣言は必要なけど、interface には必要 like i I = ..
 	i.M()
+}
+
+func main() {
+	call()
 }
