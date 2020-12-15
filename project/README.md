@@ -61,4 +61,8 @@ func main() {
 }
 
 ```
-- `the empty interface`: 空の interface は未知の型を扱うコードで使用される（入ってくる型が未知なので、empty interface を定義し、なんでも受け入れるようにする.）
+- `the empty interface`: 空の interface は未知の型を扱うコードで使用される（入ってくる型が未知なので、empty interface を定義し、なんでも受け入れるようにする.
+）
+
+### interface に対しての考え方
+- `interface` はメソッドの集まりである。それらのメソッドは値に対して適用されるわけであり、`interface は値を保持するという概念`が重要である。interface を通して、その値の型をチェックすることができるし、その値の型によって条件分することもできる。（type assertions, type switches）
