@@ -32,9 +32,23 @@ func typeSwitch(i interface{}) {
 	}
 }
 
+type Person struct {
+	Name string
+	Age  int
+}
+
+// Stringers interface -> string として表現することができる型
+func (p Person) String() string {
+	return fmt.Sprintf("%v (%v years)", p.Name, p.Age)
+}
+
 func main() {
 	typeAssert()
 	typeSwitch(21)
 	typeSwitch("hello")
 	typeSwitch(true)
+
+	a := Person{"Arther Dent", 42}
+	z := Person{"Zaphod Beeblebrox", 9001}
+	fmt.Println(a, z)
 }
