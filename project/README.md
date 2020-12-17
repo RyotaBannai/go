@@ -66,3 +66,6 @@ func main() {
 
 ### interface に対しての考え方
 - `interface` はメソッドの集まりである。それらのメソッドは値に対して適用されるわけであり、`interface は値を保持するという概念`が重要である。interface を通して、その値の型をチェックすることができるし、その値の型によって条件分することもできる。（type assertions, type switches）
+
+### goroutine
+- 通常、片方準備ができるまで送受信はブロックされるため、明確なロックや条件変数が無くても goroutine の同期が可能である.
