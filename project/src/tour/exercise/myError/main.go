@@ -9,7 +9,7 @@ type ErrNegativeSqrt float64
 
 // Errors: myError 型
 func (e ErrNegativeSqrt) Error() string {
-	return fmt.Sprintf("cannot Sqrt negative number: %f", e)
+	return fmt.Sprintf("cannot Sqrt negative number: %f", float64(e))
 }
 
 func Sqrt(x float64) (float64, error) {
