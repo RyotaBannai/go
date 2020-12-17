@@ -52,6 +52,34 @@ func closeChan() {
 	}
 }
 
+// https://stackoverflow.com/questions/34931059/go-tutorial-select-statement
+// ポイントは unbuffered がどのようになれば、データが流れるかを理解すること.
+func fibonacci2(c chan int, quit chan int) {
+	x, y := 0, 1
+	for { // this is equivalent to a while loop, without a stop condition
+		select {
+		case c <- x: // when we can send to channel c, and because c is unbuffered, we can only send to channel c when someone tries to receive from it
+			x, y = y, x+y
+		case <-quit: // when we can receive from channel quit, and because quit is unbuffered, we can only receive from channel quit when someone tries to send to it
+			fmt.Println("quit")
+			return
+		}
+	}
+}
+
+func mySelect() {
+	c := make(chan int)
+	quit := make(chan int)
+	go func() {
+		for i := 0; i < 10; i++ {
+			fmt.Println(<-c)
+		}
+		quit <- 0
+	}()
+	// fibonacci2 は select を宣言して channel 振り分けをしているだけ
+	fibonacci2(c, quit)
+}
+
 func main() {
-	closeChan()
+	mySelect()
 }
