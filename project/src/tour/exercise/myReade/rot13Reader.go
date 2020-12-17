@@ -10,6 +10,7 @@ type rot13Reader struct {
 	r io.Reader
 }
 
+// https://ja.wikipedia.org/wiki/ROT13
 func (a *rot13Reader) Read(rb []byte) (n int, e error) {
 	n, e = a.r.Read(rb)
 	if e == nil {
