@@ -52,9 +52,11 @@ func closeChan() {
 	}
 }
 
-// https://stackoverflow.com/questions/34931059/go-tutorial-select-statement
-// ポイントは unbuffered がどのようになれば、データが流れるかを理解すること.
-func fibonacci2(c chan int, quit chan int) {
+/*
+	https://stackoverflow.com/questions/34931059/go-tutorial-select-statement
+	ポイントは unbuffered がどのようになれば、データが流れるかを理解すること.
+*/
+func fibonacci2(c, quit chan int) {
 	x, y := 0, 1
 	for { // this is equivalent to a while loop, without a stop condition
 		select {
