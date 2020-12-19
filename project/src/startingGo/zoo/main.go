@@ -7,7 +7,7 @@ package main
 
 import (
 	"fmt"
-	"starginGo/zoo/animals" // 相対パスだと package ビルドできない...
+	"startingGo/zoo/animals" // 相対パスだと package ビルドできない...
 )
 
 func main() {
