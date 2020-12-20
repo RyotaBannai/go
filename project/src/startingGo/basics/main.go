@@ -38,6 +38,7 @@ func runDefer() {
 	/*
 		・defer に登録された式は関数の終了後に評価される.
 		・複数 defer を宣言した場合、初めに defer 宣言された関数は最後に評価されることに注意.
+		・defer は panic が起きても実行される!
 	*/
 
 	//defer fmt.Println("Deferred.") // ok as well
@@ -48,6 +49,11 @@ func runDefer() {
 }
 
 func check(e error) {
+	defer func() {
+		if x := recover(); x != nil {
+			fmt.Printf("Recovered from a panic:\n\t%v\n\n", x)
+		}
+	}()
 	if e != nil {
 		panic(e)
 	}
@@ -61,14 +67,14 @@ func prettyPrint(data map[string]interface{}) {
 }
 
 func openFile() {
-	jsonFile, err := os.Open("./users.json")
+	jsonFile, err := os.Open("./usrs.json")
 	if err != nil {
 		fmt.Println("file doesn't exist.")
 		return
 	} else {
 		fmt.Println("file exists.")
 	}
-	// check(err)
+	//check(err)
 
 	// structure json data.
 	// https://tutorialedge.net/golang/parsing-json-with-golang/
@@ -84,9 +90,9 @@ func openFile() {
 	defer func() {
 		err := jsonFile.Close()
 		if err != nil {
-			fmt.Println("error occurred while closing file..")
+			fmt.Println("error occurred while closing file.")
 		} else {
-			fmt.Println("closed file successfully")
+			fmt.Println("file was closed successfully")
 		}
 	}()
 }
