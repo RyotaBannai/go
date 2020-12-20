@@ -9,6 +9,11 @@ import (
 	"os"
 )
 
+func init() {
+	// init 関数は main 関数に先立って実行される
+	fmt.Println("init was called the first")
+}
+
 func loopString() {
 	for i, r := range "あいうえお" {
 		fmt.Printf("[%d] = %d\n", i, r)
@@ -23,6 +28,7 @@ func loopString() {
 		[9] = 12360
 		[12] = 12362
 	*/
+	fmt.Println("あいうえお"[2:9]) // マルチバイトの場合バイト列を考慮して 3:9 のようにする... この場合文字バゲが発生 → �いう
 }
 
 func caseByType(x interface{}) {
@@ -97,6 +103,24 @@ func openFile() {
 	}()
 }
 
+func carefulMap() {
+	/*
+		・map からデータを参照するときは、キーが存在しないと初期値が返却されてしまいバグの温床になるため、
+			必ず成功したかどうかの判別を一緒に行う.
+	*/
+	averageLifeSpanByCountry := map[string]int{
+		"Japan": 80,
+		"USA":   75,
+		"UK":    79}
+	fmt.Println(averageLifeSpanByCountry["China"]) // result in 0 because value type has no nil
+
+	if lifeSpan, ok := averageLifeSpanByCountry["China"]; ok {
+		fmt.Println(lifeSpan)
+	} else {
+		fmt.Println("This country has no life span data.")
+	}
+
+}
 func main() {
 	a := []string{
 		"Michael",
@@ -109,4 +133,6 @@ func main() {
 	caseByType(uint(10))
 	runDefer()
 	openFile()
+	showRuntimeDetails()
+	carefulMap()
 }
