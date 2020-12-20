@@ -33,6 +33,36 @@ fmt.Println(p.Abs()) // OK
 2. メソッド呼び出しごとに変数のコピーを避けるため（レシーバが大きな構造体である場合に特に効果的である）
 - 一般的に値レシーバとポインタレシーバのどちらかで全てのメソッドを与え、`混在させるべきではない.`
 
+### メソッド
+- コンストラクタを提供する 命名規則は `New[Struct Name]`
+```go
+package person
+import (
+	"fmt"
+)
+type Person struct{
+	Id int
+	Name string
+}
+
+func (p *Person) Greet() {
+	fmt.Printf("Hello! I'm %s", p.Name)
+}
+
+func NewUser(id int, name string) *Person {
+	u := new(Person)
+	u.Id = id
+	u.Name = name
+	return u
+}
+
+func main()  {
+ f := (*Person).Greet // 関数としてのメソッド
+ f(&Person{Id: 0, Name: "Ryota"})
+}
+```
+- メソッドを関数使用する
+
 ### nil interface
 - `nil interface` がメソッドを呼び出すとランタイムエラー
 - `interface を実装した具体的な値が nil の場合`は nil をレシーバーとして呼び出されるため、ランタイムエラーにはならない
@@ -72,5 +102,5 @@ func main() {
 
 ### pointer 
 - ポインタ型は、型情報とメモリ上のデータがあるアドレスを保持したもの（データ型は、型情報とそのデータを保持したもの）
-- string 型は immutable で、文字列のインデックスのポインタを取り出して、それ事態を変更することはできない → 通常の文字列の操作は別のデータを作成している
+- string 型は immutable で、文字列のインデックスのポインタを取り出して、それ自体を変更することはできない → 通常の文字列の操作は別のデータを作成している
 - string 型は、内部的に「文字列の実態へのポインタ」と「文字列のバイト長」によって構成される. つまり string 型は、その型の仕組みそのものにポインタを内包してるため、関数の引数として string 型を値渡ししたとしても、文字列の実態へのポインタと文字列のバイト長という２つの値がコピーされるだけでことが足りるため、文字列の実態がコピーされることはない
