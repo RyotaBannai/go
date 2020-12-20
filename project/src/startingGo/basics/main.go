@@ -135,4 +135,6 @@ func main() {
 	openFile()
 	showRuntimeDetails()
 	carefulMap()
+
+	sender()
 }
