@@ -56,7 +56,7 @@ func printFileStats(file *os.File) {
 	}
 }
 
-func readAllContent(file *os.File) string {
+func readContents(file *os.File) string {
 	if b, err := ioutil.ReadAll(file); err != nil {
 		return ""
 	} else {
@@ -64,7 +64,7 @@ func readAllContent(file *os.File) string {
 	}
 }
 
-func printAllContentByScanner(file *os.File) {
+func printContentsByScanner(file *os.File) {
 	// read content by newline
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
@@ -76,11 +76,32 @@ func printAllContentByScanner(file *os.File) {
 	}
 }
 
-func checkFileInfo() {
+func WordCounter(file *os.File) map[string]int {
+	wordMap := make(map[string]int)
+	scanner := bufio.NewScanner(file)
+	scanner.Split(bufio.ScanWords) // 引数は splitFunc
+	for scanner.Scan() {
+		word := scanner.Text()
+		if elem, ok := wordMap[word]; ok {
+			wordMap[word] = elem + 1
+		} else {
+			wordMap[word] = 1
+		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+		return nil
+	}
+	return wordMap
+}
+
+func checkFile() {
 	file, err := fileOpener("./sentence.txt")
 	defer fileCloser(file) // return の前に宣言
 	if err != nil {
 		return
 	}
-	printAllContentByScanner(file)
+	counter := WordCounter(file)
+	fmt.Println(counter)
 }
