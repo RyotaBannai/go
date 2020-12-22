@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/TylerBrock/colorjson"
+	"io/ioutil"
 	"os"
 )
 
@@ -13,7 +14,7 @@ func prettyPrinter(data map[string]interface{}) {
 	fmt.Println(string(s))
 }
 
-func fileCloser(file *os.File) { // return の前に宣言しておく
+func fileCloser(file *os.File) {
 	if err := file.Close(); err != nil {
 		fmt.Println("error occurred while closing file.")
 	} else {
@@ -22,8 +23,7 @@ func fileCloser(file *os.File) { // return の前に宣言しておく
 }
 
 func fileOpener(filepath string) (file *os.File, err error) {
-	file, err = os.Open(filepath) // file に assign するのは メモリ上の実態データ
-	if err != nil {
+	if file, err = os.Open(filepath); err != nil { // file に assign するのは メモリ上の実態データ
 		fmt.Println("file doesn't exist.")
 		return nil, err
 	} else {
@@ -34,17 +34,18 @@ func fileOpener(filepath string) (file *os.File, err error) {
 
 func checkFileInfo() {
 	file, err := fileOpener("./sentence.txt")
-	defer fileCloser(file)
+	defer fileCloser(file) // return の前に宣言
 	if err != nil {
 		return
 	}
-	bs := make([]byte, 128)
-	// n は実際に読み込んだバイト数
-	if n, err := file.Read(bs); err != nil {
-		fmt.Println("error")
-	} else {
-		fmt.Println(n)
-	}
+
+	// bs := make([]byte, 128)
+	// // n は実際に読み込んだバイト数
+	// if n, err := file.Read(bs); err != nil {
+	// 	fmt.Println("error")
+	// } else {
+	// 	fmt.Println(n)
+	// }
 
 	// file のステータスを確認
 
@@ -55,5 +56,10 @@ func checkFileInfo() {
 		fmt.Println(fi.Mode())    // ファイルのモード os.FileMode (chmod)
 		fmt.Println(fi.ModTime()) // ファイルの最終更新時間 time.Time
 		fmt.Println(fi.IsDir())   // ディレクトリかどうか
+	}
+
+	if b, err := ioutil.ReadAll(file); err != nil {
+	} else {
+		fmt.Println(string(b))
 	}
 }
