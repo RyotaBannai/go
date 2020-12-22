@@ -9,6 +9,10 @@ import (
 	"os"
 )
 
+/*
+	read file reference: http://zetcode.com/golang/readfile/
+*/
+
 func prettyPrinter(data map[string]interface{}) {
 	f := colorjson.NewFormatter()
 	f.Indent = 2
@@ -96,6 +100,17 @@ func WordCounter(file *os.File) map[string]int {
 	return wordMap
 }
 
+func readDirRecursively(dir *os.File) {
+	if files, err := dir.Readdir(0); err != nil { // 0 で全て取得
+	} else {
+		for _, file := range files {
+			if file.IsDir() {
+				fmt.Println(file.Name()) // ディレクトリのみ取得
+			}
+		}
+	}
+}
+
 func checkFile() {
 	file, err := fileOpener("./sentence.txt")
 	defer fileCloser(file) // return の前に宣言
@@ -104,4 +119,13 @@ func checkFile() {
 	}
 	counter := WordCounter(file)
 	fmt.Println(counter)
+}
+
+func checkDir() {
+	dir, err := fileOpener("../") // startingGo
+	defer fileCloser(dir)
+	if err != nil {
+	} else {
+		readDirRecursively(dir)
+	}
 }

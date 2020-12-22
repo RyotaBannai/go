@@ -23,5 +23,5 @@ func main() {
 
 	log.Print("Hello, world!")
 
-	checkFile()
+	checkDir()
 }
