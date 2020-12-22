@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"github.com/TylerBrock/colorjson"
 	"io/ioutil"
+	"log"
 	"os"
 )
 
@@ -32,23 +34,18 @@ func fileOpener(filepath string) (file *os.File, err error) {
 	}
 }
 
-func checkFileInfo() {
-	file, err := fileOpener("./sentence.txt")
-	defer fileCloser(file) // return の前に宣言
-	if err != nil {
-		return
+func checkNumberOfBytes(file *os.File) int {
+	if n, err := file.Read(make([]byte, 128)); err != nil { // n は実際に読み込んだバイト数
+		fmt.Println("error")
+		return 0
+	} else {
+		fmt.Println(n)
+		return n
 	}
+}
 
-	// bs := make([]byte, 128)
-	// // n は実際に読み込んだバイト数
-	// if n, err := file.Read(bs); err != nil {
-	// 	fmt.Println("error")
-	// } else {
-	// 	fmt.Println(n)
-	// }
-
-	// file のステータスを確認
-
+func printFileStats(file *os.File) {
+	// file のステータス
 	if fi, err := file.Stat(); err != nil {
 	} else {
 		fmt.Println(fi.Name())    // ファイル名
@@ -57,9 +54,33 @@ func checkFileInfo() {
 		fmt.Println(fi.ModTime()) // ファイルの最終更新時間 time.Time
 		fmt.Println(fi.IsDir())   // ディレクトリかどうか
 	}
+}
 
+func readAllContent(file *os.File) string {
 	if b, err := ioutil.ReadAll(file); err != nil {
+		return ""
 	} else {
-		fmt.Println(string(b))
+		return string(b)
 	}
+}
+
+func printAllContentByScanner(file *os.File) {
+	// read content by newline
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		fmt.Println("-----")
+		fmt.Println(scanner.Text())
+	}
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func checkFileInfo() {
+	file, err := fileOpener("./sentence.txt")
+	defer fileCloser(file) // return の前に宣言
+	if err != nil {
+		return
+	}
+	printAllContentByScanner(file)
 }
