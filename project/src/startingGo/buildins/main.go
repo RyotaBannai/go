@@ -51,5 +51,5 @@ func init() {
 
 func main() {
 	Logger.Println("hello world")
-	checkDir()
+	getPokemon()
 }
