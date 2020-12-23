@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 )
 
 /*
@@ -68,11 +69,21 @@ func readContents(file *os.File) string {
 	}
 }
 
+func readContents2(filePath string) (string, error) {
+	// file を close する必要ない.
+	if content, err := ioutil.ReadFile(filePath); err != nil {
+		fmt.Println("Failed to read content.")
+		return "", err
+	} else {
+		return string(content), nil
+	}
+}
+
 func printContentsByScanner(file *os.File) {
 	// read content by newline
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		fmt.Println("-----")
+		fmt.Println(strings.Repeat("-", 5))
 		fmt.Println(scanner.Text())
 	}
 	if err := scanner.Err(); err != nil {
@@ -121,6 +132,11 @@ func checkFile() {
 	}
 	counter := WordCounter(file)
 	fmt.Println(counter)
+
+	if content, err := readContents2("./sentence.txt"); err != nil {
+	} else {
+		fmt.Println(content)
+	}
 }
 
 func checkDir() {
