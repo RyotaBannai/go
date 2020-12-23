@@ -13,6 +13,14 @@ func say(s string) {
 	}
 }
 
+func Sum(s []int) {
+	sum := 0
+	for i := range s { // accept only index value..
+		sum += i
+	}
+	fmt.Println(sum)
+}
+
 func SumReturnToChan(s []int, c chan int) {
 	sum := 0
 	for _, v := range s {
@@ -84,15 +92,8 @@ func mySelect() {
 }
 
 func N(n int) []int {
+	// make N length int slice for the loop purpose
 	return make([]int, n)
-}
-
-func Sum(s []int) {
-	sum := 0
-	for i := range s {
-		sum += i
-	}
-	fmt.Println(sum)
 }
 
 func main() {
