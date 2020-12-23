@@ -1,6 +1,7 @@
 package main
 
 import (
+	"sync"
 	"time"
 	"fmt"
 )
@@ -12,7 +13,7 @@ func say(s string) {
 	}
 }
 
-func sum(s []int, c chan int) {
+func SumReturnToChan(s []int, c chan int) {
 	sum := 0
 	for _, v := range s {
 		sum += v
@@ -25,12 +26,12 @@ func run() {
 	say("hello")
 }
 
-func dist_tasks() {
+func distTasks() {
 	// ２つの goroutine 間で作業を分配する!!
 	s := []int{7, 2, 8, -9, 4, 0}
 	c := make(chan int)
-	go sum(s[:len(s)/2], c)
-	go sum(s[len(s)/2:], c)
+	go SumReturnToChan(s[:len(s)/2], c)
+	go SumReturnToChan(s[len(s)/2:], c)
 	x, y := <-c, <-c // receive from c
 	fmt.Println(x, y, x+y)
 }
@@ -82,6 +83,26 @@ func mySelect() {
 	fibonacci2(c, quit)
 }
 
+func N(n int) []int {
+	return make([]int, n)
+}
+
+func Sum(s []int) {
+	sum := 0
+	for i := range s {
+		sum += i
+	}
+	fmt.Println(sum)
+}
+
 func main() {
-	mySelect()
+	wg := new(sync.WaitGroup)
+	wg.Add(2)
+	funcWithDone := func() {
+		Sum(N(100))
+		wg.Done()
+	}
+	go funcWithDone()
+	go funcWithDone()
+	wg.Wait() // 2 つ完了するまで wait
 }

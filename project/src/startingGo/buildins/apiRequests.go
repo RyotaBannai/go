@@ -9,8 +9,9 @@ import (
 )
 
 /*
-	・リクエストヘッダー、レスポンスヘッダーの内容は
-	それぞれfunc DumpRequestOut func DumpResponseで確認
+	・リクエストヘッダー　→　func DumpRequestOut
+	・レスポンスヘッダー　→ func DumpResponse
+	で内容を確認
 */
 
 var (
