@@ -1,27 +1,53 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
+	"io"
 	"log"
+	"os"
+	"time"
 )
 
-func Logger() (buf bytes.Buffer, infof func(message string)) {
-	var (
-		logger = log.New(&buf, "INFO: ", log.Lshortfile)
+var (
+	constant = map[string]interface{}{
+		"LOG_FILENAME":  "app_log",
+		"LOG_EXTENSION": ".txt"}
+	Logger *log.Logger
+)
+
+/*
+	const (
+  		Ldate         = 1 << iota  // 日付
+  		Ltime                      // 時刻
+  		Lmicroseconds              // 時刻のマイクロ秒
+  		Llongfile                  // ソースファイル（ディレクトリパスを含む）
+  		Lshortfile                 // ソースファイル（ファイル名のみ）
+  		LUTC                       // タイムゾーンに依らない UTC 時刻
+  		LstdFlags     = Ldate | Ltime  // 日付 (Ldata) と時刻 (Ltime) ：デフォルト
 	)
-	infof = func(info string) {
-		logger.Output(2, info)
+
+	<convert interface{} to string>
+	・fmt.Sprintf("%v", interface{}) // fmt
+	・(interface{}).(string)         // type assertion
+*/
+
+func init() {
+	today := time.Now().Format("2000-01-01")
+	var (
+		logDirPath  = os.Getenv("GOPATH") + "/log/"
+		logFilePath = logDirPath + today + constant["LOG_FILENAME"].(string) + constant["LOG_EXTENSION"].(string)
+		file, err   = os.OpenFile(logFilePath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	)
+	if err != nil {
+		fmt.Println("Error: failed to create log file. \nMaybe log directory doesn't exist under GOPATH.")
+		return
 	}
-	return
+	multiWriter := io.MultiWriter(os.Stdout, file) // 標準出力とファイル出力
+	Logger = log.New(multiWriter, "Logger: ", log.LstdFlags|log.Lshortfile)
+	Logger.Println("LogFile initialized.")
 }
 
 func main() {
-	lbuf, logger := Logger()
-	logger("hello world")
-	fmt.Println(lbuf)
-
-	log.Print("Hello, world!")
-
+	Logger.Println("hello world")
 	checkDir()
 }

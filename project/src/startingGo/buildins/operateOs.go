@@ -81,8 +81,10 @@ func printContentsByScanner(file *os.File) {
 }
 
 func WordCounter(file *os.File) map[string]int {
-	wordMap := make(map[string]int)
-	scanner := bufio.NewScanner(file)
+	var (
+		wordMap = make(map[string]int)
+		scanner = bufio.NewScanner(file)
+	)
 	scanner.Split(bufio.ScanWords) // 引数は splitFunc
 	for scanner.Scan() {
 		word := scanner.Text()
