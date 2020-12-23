@@ -15,6 +15,7 @@ var (
 	Logger *log.Logger
 )
 
+// reference: https://stackoverflow.com/questions/19965795/how-to-write-log-to-file
 /*
 	const (
   		Ldate         = 1 << iota  // 日付
@@ -32,8 +33,9 @@ var (
 */
 
 func init() {
-	today := time.Now().Format("2000-01-01")
+
 	var (
+		today       = time.Now().Format("2000-01-01")
 		logDirPath  = os.Getenv("GOPATH") + "/log/"
 		logFilePath = logDirPath + today + constant["LOG_FILENAME"].(string) + constant["LOG_EXTENSION"].(string)
 		file, err   = os.OpenFile(logFilePath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)

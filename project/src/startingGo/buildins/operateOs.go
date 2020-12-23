@@ -88,8 +88,8 @@ func WordCounter(file *os.File) map[string]int {
 	scanner.Split(bufio.ScanWords) // 引数は splitFunc
 	for scanner.Scan() {
 		word := scanner.Text()
-		if elem, ok := wordMap[word]; ok {
-			wordMap[word] = elem + 1
+		if _, ok := wordMap[word]; ok {
+			wordMap[word] += 1
 		} else {
 			wordMap[word] = 1
 		}
