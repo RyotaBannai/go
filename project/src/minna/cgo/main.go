@@ -35,4 +35,6 @@ func main() {
 	fmt.Println(res)
 	res2 := C.Add(10, 10)
 	fmt.Println(res2)
+
+	callC()
 }
