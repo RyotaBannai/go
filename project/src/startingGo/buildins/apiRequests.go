@@ -6,6 +6,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"startingGo/buildins/useful"
 )
 
 /*
@@ -35,7 +36,7 @@ func getPokemon() {
 	if err != nil {
 		return
 	}
-	prettyPrinter(Mapper(resp.Body))
+	useful.PrettyPrinter(Mapper(resp.Body))
 }
 
 // http.Client を使う方法
@@ -44,5 +45,5 @@ func getPokemon2() {
 	client := new(http.Client)
 	resp, _ := client.Do(req)
 	defer resp.Body.Close()
-	prettyPrinter(Mapper(resp.Body))
+	useful.PrettyPrinter(Mapper(resp.Body))
 }

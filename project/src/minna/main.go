@@ -1,8 +1,14 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/davecgh/go-spew/spew"
+	"github.com/fatih/structs"
+	"github.com/k0kubun/pp"
+	"log"
 	"minna/lib"
+	_ "startingGo/buildins/useful"
 	"sync"
 )
 
@@ -38,5 +44,24 @@ func readMap() {
 }
 
 func main() {
-	lib.LoadConfig()
+	cfg, err := lib.LoadConfigEnv()
+	if err != nil {
+		log.Fatal("error occurred..")
+	}
+
+	// 綺麗に表示させる
+	b, _ := json.MarshalIndent(&cfg, "", "	")
+	fmt.Println(string(b))
+
+	// convert Struct to Map
+	mapped := structs.Map(&cfg)
+	fmt.Println(mapped)
+	fmt.Printf("%T\n", mapped)
+
+	// use spew
+	spew.Dump(mapped)
+
+	// pretty print
+	pp.Println(mapped)
+
 }

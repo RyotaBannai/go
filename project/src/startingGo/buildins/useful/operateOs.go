@@ -1,4 +1,4 @@
-package main
+package useful
 
 import (
 	"bufio"
@@ -14,7 +14,7 @@ import (
 	read file reference: http://zetcode.com/golang/readfile/
 */
 
-func prettyPrinter(data map[string]interface{}) {
+func PrettyPrinter(data map[string]interface{}) {
 	f := colorjson.NewFormatter()
 	f.Indent = 2
 	s, _ := f.Marshal(data)
