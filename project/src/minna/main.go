@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"minna/lib"
 	"sync"
 )
 
@@ -27,11 +28,15 @@ func (kv *KeyValue) Get(key string) (string, bool) {
 	return val, ok
 }
 
-func main() {
+func readMap() {
 	kv := NewKeyValue()
 	kv.Set("Key", "Value")
 	val, ok := kv.Get("Key")
 	if ok {
 		fmt.Println(val)
 	}
+}
+
+func main() {
+	lib.LoadConfig()
 }
