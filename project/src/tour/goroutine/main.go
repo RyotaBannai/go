@@ -1,9 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"sync"
 	"time"
-	"fmt"
 )
 
 func say(s string) {
@@ -96,7 +96,7 @@ func N(n int) []int {
 	return make([]int, n)
 }
 
-func main() {
+func waitAll() {
 	wg := new(sync.WaitGroup)
 	wg.Add(2)
 	funcWithDone := func() {
@@ -106,4 +106,8 @@ func main() {
 	go funcWithDone()
 	go funcWithDone()
 	wg.Wait() // 2 つ完了するまで wait
+}
+
+func main() {
+	selectDefault()
 }
