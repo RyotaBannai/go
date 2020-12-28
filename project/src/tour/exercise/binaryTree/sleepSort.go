@@ -9,7 +9,10 @@ import (
 	sleep sort:
 		時間差で単純に append していくだけで実際に値のソートを行わない手法
 
-	https://qiita.com/exotic-toybox/items/2ecd62d3fd32bdd5511b
+		https://qiita.com/exotic-toybox/items/2ecd62d3fd32bdd5511b
+
+	・goroutine 内で変数を使うときの注意点, go vet でチェック.
+		https://qiita.com/sudix/items/67d4cad08fe88dcb9a6d
 */
 
 func SleepSort(numList *[]int) {
