@@ -103,5 +103,6 @@ func testSame() {
 }
 
 func main() {
-	testSame()
+	//testSame()
+	SleepSort(&[]int{1, 5, 6, 3, 2, 8, 9, 10})
 }
