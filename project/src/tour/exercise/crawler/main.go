@@ -5,65 +5,43 @@ import (
 	"sync"
 )
 
-var (
-	store = NewStore()
-)
-
-type Store struct {
-	store map[string]string
-	mu    sync.RWMutex
-}
-
-func NewStore() *Store {
-	return &Store{store: make(map[string]string)}
-}
-
-func (s *Store) Set(key, val string) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	s.store[key] = val
-}
-
-func (s *Store) Get(key string) (string, bool) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	val, ok := s.store[key]
-	return val, ok
-}
-
 func main() {
+	Crawl("https://golang.org/", 4, fetcher)
+}
+
+func Crawl(url string, depth int, fetcher Fetcher) {
+	var execute func(url string, depth int, fetcher Fetcher, wg *sync.WaitGroup)
+	execute = func(url string, depth int, fetcher Fetcher, wg *sync.WaitGroup) {
+		if depth <= 0 {
+			wg.Done()
+			return
+		}
+		if _, ok := store.Get(url); ok {
+			fmt.Printf("This url (%s) has already fetched... return\n", url)
+			wg.Done()
+			return
+		}
+		body, urls, err := fetcher.Fetch(url)
+		if err != nil {
+			fmt.Println(err) // not found.
+			wg.Done()
+			return
+		}
+
+		store.Set(url, body)
+		fmt.Printf("found: %s %q\n", url, body)
+
+		for _, u := range urls {
+			wg.Add(1)
+			go execute(u, depth-1, fetcher, wg)
+		}
+		wg.Done()
+		return
+	}
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
-	go Crawl("https://golang.org/", 4, fetcher, wg)
+	go execute(url, depth, fetcher, wg)
 	wg.Wait()
-}
-
-func Crawl(url string, depth int, fetcher Fetcher, group *sync.WaitGroup) {
-	if depth <= 0 {
-		group.Done()
-		return
-	}
-	if _, ok := store.Get(url); ok {
-		fmt.Printf("This url (%s) has already fetched... return\n", url)
-		group.Done()
-		return
-	}
-	body, urls, err := fetcher.Fetch(url)
-	if err != nil {
-		fmt.Println(err) // not found.
-		group.Done()
-		return
-	}
-
-	store.Set(url, body)
-	fmt.Printf("found: %s %q\n", url, body)
-
-	for _, u := range urls {
-		group.Add(1)
-		go Crawl(u, depth-1, fetcher, group)
-	}
-	group.Done()
-	return
 }
 
 type Fetcher interface {
