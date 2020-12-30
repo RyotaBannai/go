@@ -109,5 +109,5 @@ func waitAll() {
 }
 
 func main() {
-	selectDefault()
+	cancelableGoroutine()
 }
