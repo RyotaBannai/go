@@ -3,7 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/k0kubun/pp"
 	"os"
+	"strings"
 )
 
 /*
@@ -87,20 +89,84 @@ import (
 		DefValue string // default value (as text); for usage message
 	}
 
+	type Value interface {
+		String() string
+		Set(string) error
+	}
 */
 
 func handlerErr(err error) {
 	fmt.Println(err)
 }
 
-func main() {
-	flags := flag.NewFlagSet("awesomeCmd", flag.ContinueOnError)
-	if err := flags.Parse(os.Args[1:]); err != nil {
+func newStringSliceValue(val []string, p *[]string) *stringSliceValue {
+	*p = val
+	return (*stringSliceValue)(p)
+}
+
+type stringSliceValue []string
+
+func (v *stringSliceValue) Set(s string) error {
+	*v = strings.Split(s, ",")
+	//*v = append(*v, strs...) // append だと default の内容が残ってしまうため、上書きする
+	return nil
+}
+
+func (v *stringSliceValue) String() string {
+	return strings.Join(([]string)(*v), ",")
+}
+
+/*
+	https://stackoverflow.com/questions/41109708/cant-define-receiver-from-another-package-in-go
+ 	→ You can only define methods on a type defined in that same package.
+*/
+
+func StringSliceVal(p *[]string, name string, value []string, usage string) {
+	CommandLine.Var(newStringSliceValue(value, p), name, usage)
+}
+
+var (
+	species     []string
+	CommandLine = flag.NewFlagSet("awesomeCmd", flag.ContinueOnError)
+)
+
+func customFlag() {
+	StringSliceVal(&species, "species", []string{"first", "second"}, "this is the usage")
+
+	if err := CommandLine.Parse(os.Args[1:]); err != nil {
 		// 独自のエラー処理
 		handlerErr(err)
 	}
 	// show usage
 	// same as package definition
-	flags.Usage = func() { flags.PrintDefaults() }
-
+	CommandLine.Usage = func() { CommandLine.PrintDefaults() }
+	pp.Println(species)
 }
+
+/*
+$ ./runCommand -species aaa,bbb
+pp.Println(CommandLine)
+	/* =>
+		&flag.FlagSet{
+		  Usage:  func() {...},
+		  name:   "awesomeCmd",
+		  parsed: true,
+		  actual: map[string]*flag.Flag{
+			"species": &flag.Flag{
+			  Name:  "species",
+			  Usage: "this is the usage",
+			  Value: &main.stringSliceValue{
+				"aaa",
+				"bbb",
+			  },
+			  DefValue: "first,second",
+			},
+		  },
+		  formal: map[string]*flag.Flag{
+			"species": &flag.Flag{...},
+		  },
+		  args:          []string{},
+		  errorHandling: 0,
+		  output:        nil,
+		}
+*/

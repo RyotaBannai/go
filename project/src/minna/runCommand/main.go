@@ -27,9 +27,10 @@ import (
 */
 
 func main() {
-	if err := ToUpper(os.Stdin, os.Stdout, os.Stderr); err != nil {
-		log.Println("failed to complete command. \n", err)
-	}
+	//if err := ToUpper(os.Stdin, os.Stdout, os.Stderr); err != nil {
+	//	log.Println("failed to complete command. \n", err)
+	//}
+	customFlag()
 }
 
 /*
