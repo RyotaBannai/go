@@ -1,5 +1,11 @@
 package main
 
+import (
+	"flag"
+	"fmt"
+	"os"
+)
+
 /*
 	カスタムの flag を作りたい
 		・オプションのエラー処理を独自に実装
@@ -8,6 +14,14 @@ package main
 /*
 	// https://github.com/golang/go/blob/846dce9d05f19a1f53465e62a304dea21b99f910/src/flag/flag.go
 	・details:
+
+	type ErrorHandling int
+
+	const (
+		ContinueOnError ErrorHandling = iota // Return a descriptive error.
+		ExitOnError                          // Call os.Exit(2) or for -h/-help Exit(0).
+		PanicOnError                         // Call panic with a descriptive error.
+	)
 
 	// IntVar は var を int でキャストしたもの
 	func IntVar(p *int, name string, value int, usage string){
@@ -75,6 +89,18 @@ package main
 
 */
 
+func handlerErr(err error) {
+	fmt.Println(err)
+}
+
 func main() {
+	flags := flag.NewFlagSet("awesomeCmd", flag.ContinueOnError)
+	if err := flags.Parse(os.Args[1:]); err != nil {
+		// 独自のエラー処理
+		handlerErr(err)
+	}
+	// show usage
+	// same as package definition
+	flags.Usage = func() { flags.PrintDefaults() }
 
 }
