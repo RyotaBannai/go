@@ -6,6 +6,18 @@ import (
 	"sync"
 )
 
+/*
+	・goroutine を終了させる方法として、他には close もある
+
+	for url, more := range <- queue{
+		if more {}
+		else{
+			wg.Done()
+			return
+		}
+	}
+*/
+
 var (
 	wg = &sync.WaitGroup{}
 )
