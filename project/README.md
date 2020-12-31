@@ -118,3 +118,8 @@ func main() {
 ### vendor
 - go は基本的に `GOPATH`の配下に pkg フォルダを作成して、サードパーティなどをインストールする。ただ、GOPATH 配下に複数の package を用意している場合で、異なるバージョンの同じサードパーティを使いたい場合参照先を変えたくなる。これを実現する仕組みが `vendor`
 - バージョンを固定化したい package 配下に vendor フォルダを作成し、その中にサードパーティを入れると、GOPATH 配下よりも優先して vendor 配下を参照するようにできる.
+
+### Dependancies
+- list all dependencies of package: `go list -f '{{ join .Imports "\n" }}'`
+- list all dependencies with its dependencies: `go list -f '{{ join .Deps "\n" }}'`
+- install all dependencies which the package needs: `go get -u -v -f all`
