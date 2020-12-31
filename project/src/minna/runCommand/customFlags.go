@@ -9,6 +9,11 @@ import (
 )
 
 /*
+	buildin flag を使って sub commands 作成.
+	https://golang.hateblo.jp/entry/2018/10/22/080000
+*/
+
+/*
 	カスタムの flag を作りたい
 		・オプションのエラー処理を独自に実装
 		・エラーの出力先を stdout 以外にしたい
