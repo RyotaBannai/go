@@ -18,14 +18,6 @@ type AddCommand struct {
 }
 
 func (c *AddCommand) Synopsis() string {
-	// TODO: get options
-	/*
-		taskOp := flag.NewFlagSet("-n", flag.ContinueOnError)
-		taskOp.StringVar(&taskName, "name", "[no name]", "set task name")
-		taskDesc := flag.NewFlagSet("-d", flag.ContinueOnError)
-		...
-		parse()..
-	*/
 	return "Add todo task to list"
 }
 
@@ -35,6 +27,14 @@ func (c *AddCommand) Help() string {
 
 func (c *AddCommand) Run(args []string) int {
 	// TODO: todo を追加
+	// TODO: get options
+	/*
+		taskOp := flag.NewFlagSet("-n", flag.ContinueOnError)
+		taskOp.StringVar(&taskName, "name", "[no name]", "set task name")
+		taskDesc := flag.NewFlagSet("-d", flag.ContinueOnError)
+		...
+		parse()..
+	*/
 	fmt.Printf("added task to list [%s]\n", c.name)
 	fmt.Println(c)
 	return 0
