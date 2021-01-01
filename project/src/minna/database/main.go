@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"github.com/k0kubun/pp"
 	"log"
 	_ "github.com/lib/pq"
 )
@@ -67,14 +68,7 @@ func (p *PeopleQueries) run() (interface{}, error) {
 	return result, err
 }
 
-func main() {
-	connStr := "postgres://ryota:bannai@localhost/gotest?sslmode=disable"
-	db, err := sql.Open("postgres", connStr)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
-
+func test(db *sql.DB) {
 	peopleQuery := PeopleQueries{
 		person:       Person{"1006", "Mark", 35},
 		db:           db,
@@ -84,4 +78,23 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Println(result)
+}
+
+func main() {
+	connStr := "postgres://ryota:bannai@localhost/gotest?sslmode=disable"
+	db, err := sql.Open("postgres", connStr)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	rows, err := db.Query("SELECT * FROM people")
+	if err != nil {
+		log.Fatal(err)
+	}
+	for rows.Next() {
+		p := Person{}
+		err = rows.Scan(&p.id, &p.name, &p.age)
+		pp.Println(p)
+	}
 }
