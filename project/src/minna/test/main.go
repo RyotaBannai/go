@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/k0kubun/pp"
 	"log"
 	"reflect"
 )
@@ -60,5 +61,14 @@ func testDeepEqual() {
 }
 
 func main() {
-	testDeepEqual()
+	//testDeepEqual()
+
+	c := Client{GistGetter: &Gister{user: "RyotaBannai"}}
+	if urls, err := c.ListGists(); err != nil {
+		log.Println(err)
+	} else {
+		for _, url := range urls {
+			pp.Println(url)
+		}
+	}
 }
