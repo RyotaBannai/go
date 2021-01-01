@@ -1,0 +1,278 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>test: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">minna/test/funcs.go (57.1%)</option>
+				
+				<option value="file1">minna/test/interfaceForTest.go (0.0%)</option>
+				
+				<option value="file2">minna/test/main.go (0.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package main
+
+import "strings"
+
+func Words(s string) string <span class="cov8" title="1">{
+        length := len(strings.Fields(s))
+        switch </span>{
+        case length == 0:<span class="cov0" title="0">
+                return "wordless"</span>
+        case length == 1:<span class="cov0" title="0">
+                return "one word"</span>
+        case length &lt; 4:<span class="cov8" title="1">
+                return "a few words"</span>
+        case length &lt; 8:<span class="cov8" title="1">
+                return "many words"</span>
+        default:<span class="cov0" title="0">
+                return "too many words"</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package main
+
+import (
+        "bytes"
+        "encoding/json"
+        "fmt"
+        "io"
+        "net/http"
+        "strings"
+)
+
+type Gist struct {
+        Id     string                 `json:"id"`
+        RawUrl string                 `json:"url"`
+        File   map[string]interface{} `json:"files"`
+}
+
+type Getter interface {
+        getGists() (io.Reader, error)
+}
+
+// Gist の List api を扱うためのクライアントを実装
+type Client struct {
+        GistGetter Getter
+}
+
+type Gister struct {
+        user string
+}
+
+func (g *Gister) getGists() (io.Reader, error) <span class="cov0" title="0">{
+        resp, err := http.Get(fmt.Sprintf("https://api.github.com/users/%s/gists", g.user))
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">defer resp.Body.Close()
+        var buf bytes.Buffer
+        if _, err := io.Copy(&amp;buf, resp.Body); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">return &amp;buf, nil</span>
+}
+
+type DummyGister struct {
+        user string
+}
+
+func (g *DummyGister) getGists() (io.Reader, error) <span class="cov0" title="0">{
+        return strings.NewReader(`[
+                {"id":"1", "url": "example.com/a", "file": {"filename": "test1.go"}},
+                {"id":"2", "url": "example.com/b", "file": {"filename": "test2.go"}}]`), nil
+}</span>
+
+func (c *Client) ListGists() ([]Gist, error) <span class="cov0" title="0">{
+        r, err := c.GistGetter.getGists()
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">var gists []Gist
+        if err := json.NewDecoder(r).Decode(&amp;gists); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">data := make([]Gist, 0, len(gists))
+        for _, url := range gists </span><span class="cov0" title="0">{
+                data = append(data, url)
+        }</span>
+
+        <span class="cov0" title="0">return data, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package main
+
+import (
+        "github.com/k0kubun/pp"
+        "log"
+        "reflect"
+)
+
+type T struct {
+        x  int
+        ss []string
+        m  map[string]int
+}
+
+func testDeepEqual() <span class="cov0" title="0">{
+        /*
+                ・m2 and m3 are the same
+                ・the difference b/w m4 and, m2(or m3) is a value x
+
+                note:
+                ・slice の場合は値と順序が同じであること
+                ・interface であれば実際の値が等しい否かを比較
+        */
+
+        m1 := map[string]int{
+                "a": 1,
+                "b": 2,
+        }
+
+        m2 := T{
+                x:  1,
+                ss: []string{"one", "two"},
+                m: map[string]int{
+                        "one": 1,
+                        "two": 2},
+        }
+        m3 := T{
+                x:  1,
+                ss: []string{"one", "two"},
+                m: map[string]int{
+                        "one": 1,
+                        "two": 2},
+        }
+        m4 := T{
+                x:  2,
+                ss: []string{"one", "two"},
+                m: map[string]int{
+                        "one": 1,
+                        "two": 2},
+        }
+
+        log.Println(reflect.DeepEqual(m1, m2))
+        log.Println(reflect.DeepEqual(m2, m3))
+        log.Println(reflect.DeepEqual(m3, m4))
+        /*
+                =&gt;
+                2021/01/01 17:50:38 false
+                2021/01/01 17:50:38 true
+                2021/01/01 17:50:38 false
+        */
+}</span>
+
+func main() <span class="cov0" title="0">{
+        //testDeepEqual()
+
+        //c := Client{GistGetter: &amp;Gister{user: "RyotaBannai"}}
+        // test 時は dummy に切り替え
+        c := Client{GistGetter: &amp;DummyGister{user: "RyotaBannai"}}
+
+        if urls, err := c.ListGists(); err != nil </span><span class="cov0" title="0">{
+                log.Println(err)
+        }</span> else<span class="cov0" title="0"> {
+                for _, url := range urls </span><span class="cov0" title="0">{
+                        pp.Println(url)
+                }</span>
+        }
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>
