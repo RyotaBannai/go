@@ -6,12 +6,13 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 )
 
 type Gist struct {
-	Id string `json:"id"`
-	RawUrl string `json:"url"`
-	File map[string]interface{} `json:"files"`
+	Id     string                 `json:"id"`
+	RawUrl string                 `json:"url"`
+	File   map[string]interface{} `json:"files"`
 }
 
 type Getter interface {
@@ -38,6 +39,16 @@ func (g *Gister) getGists() (io.Reader, error) {
 		return nil, err
 	}
 	return &buf, nil
+}
+
+type DummyGister struct {
+	user string
+}
+
+func (g *DummyGister) getGists() (io.Reader, error) {
+	return strings.NewReader(`[
+		{"id":"1", "url": "example.com/a", "file": {"filename": "test1.go"}},
+		{"id":"2", "url": "example.com/b", "file": {"filename": "test2.go"}}]`), nil
 }
 
 func (c *Client) ListGists() ([]Gist, error) {

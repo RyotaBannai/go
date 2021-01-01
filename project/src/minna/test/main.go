@@ -63,7 +63,10 @@ func testDeepEqual() {
 func main() {
 	//testDeepEqual()
 
-	c := Client{GistGetter: &Gister{user: "RyotaBannai"}}
+	//c := Client{GistGetter: &Gister{user: "RyotaBannai"}}
+	// test 時は dummy に切り替え
+	c := Client{GistGetter: &DummyGister{user: "RyotaBannai"}}
+
 	if urls, err := c.ListGists(); err != nil {
 		log.Println(err)
 	} else {
