@@ -33,13 +33,12 @@ type queries interface {
 	insert() queries
 	update() queries
 	delete() queries
-	run() (interface{}, error)
+	run(db *sql.DB) (interface{}, error)
 }
 
 type PeopleQueries struct {
 	currentQuery string
 	person       Person
-	db           *sql.DB
 }
 
 func (p *PeopleQueries) selectAll() queries {
@@ -62,11 +61,11 @@ func (p *PeopleQueries) delete() queries {
 	return p
 }
 
-func (p *PeopleQueries) run() (interface{}, error) {
+func (p *PeopleQueries) run(db *sql.DB) (interface{}, error) {
 	if p.currentQuery == "" {
 		return nil, errors.New("Needs to query string before run.\n")
 	}
-	result, err := p.db.Exec(p.currentQuery, p.person.toSlice()...)
+	result, err := db.Exec(p.currentQuery, p.person.toSlice()...)
 	//ri, err := result.LastInsertId()
 	//ra, err := result.RowsAffected()
 	//fmt.Printf("%v\n%v\n", ri, ra)
@@ -74,25 +73,16 @@ func (p *PeopleQueries) run() (interface{}, error) {
 }
 
 func test(db *sql.DB) {
-	peopleQuery := PeopleQueries{
-		person:       Person{"1006", "Mark", 35},
-		db:           db,
-		currentQuery: ""}
-	result, err := peopleQuery.insert().run()
+	var people queries
+	people = &PeopleQueries{person: Person{"1006", "Mark", 35}}
+	result, err := people.insert().run(db)
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println(result)
 }
 
-func main() {
-	connStr := "postgres://ryota:bannai@localhost/gotest?sslmode=disable"
-	db, err := sql.Open("postgres", connStr)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
-
+func testSelect(db *sql.DB) {
 	rows, err := db.Query("SELECT * FROM people")
 	if err != nil {
 		log.Fatal(err)
@@ -102,4 +92,14 @@ func main() {
 		err = rows.Scan(p.toSlice()...)
 		pp.Println(p)
 	}
+}
+
+func main() {
+	connStr := "postgres://ryota:bannai@localhost/gotest?sslmode=disable"
+	db, err := sql.Open("postgres", connStr)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+	test(db)
 }
