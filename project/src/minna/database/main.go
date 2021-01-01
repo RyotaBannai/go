@@ -9,6 +9,11 @@ import (
 	_ "github.com/lib/pq"
 )
 
+/*
+	・go method chain
+		https://qiita.com/roba4coding/items/4180923bf7a44364e414
+*/
+
 type Slicer interface {
 	toSlice() []interface{}
 }
@@ -20,7 +25,7 @@ type Person struct {
 }
 
 func (p *Person) toSlice() []interface{} {
-	return []interface{}{p.id, p.name, p.age}
+	return []interface{}{&p.id, &p.name, &p.age}
 }
 
 type queries interface {
@@ -94,7 +99,7 @@ func main() {
 	}
 	for rows.Next() {
 		p := Person{}
-		err = rows.Scan(&p.id, &p.name, &p.age)
+		err = rows.Scan(p.toSlice()...)
 		pp.Println(p)
 	}
 }
